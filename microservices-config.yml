@@ -14,5 +14,5 @@ data:
   JWT_EXPIRATION_MS : "86400000"
   inventory-service-url : inventory-service.default.svc.cluster.local:8085
   user-service-url : user-service.default.svc.cluster.local:8081
-  BANK_ACCOUNT : bank-account-payment-service-service.default.svc.clluster.local:8088
-  PAYPAL : paypal-payment-service-service.default.svc.clluster.local:8089
+  car-service-url : car-service.default.svc.cluster.local:8083
+  payment-service-url : payment-service.default.svc.cluster.local:8087
