@@ -24,7 +24,7 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: microservices-config
-                key: kafka-service
+                key: kafka-consumer
 
 ---
 
