@@ -10,7 +10,7 @@ data:
   inventory-db: inventory-db
   account-db: account-db
   user-db: user-db
-  kafka-service: kafka-service.default.svc.cluster.local
+  kafka-service: kafka-broker-0.kafka-broker-headless.default.svc.cluster.local
   JWT_EXPIRATION_MS : "86400000"
   inventory-service-url : inventory-service.default.svc.cluster.local:8085
   user-service-url : user-service.default.svc.cluster.local:8081
