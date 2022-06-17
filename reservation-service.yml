@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservation-deployment
+  labels:
+    app: reservation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: reservation
+  template:
+    metadata:
+      labels:
+        app: reservation
+    spec:
+      containers:
+      - name: reservation
+        image: zfsehaye/reservation-service_web-app:latest
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "500m"
+        ports:
+        - containerPort: 8086
+        env:
+          - name: MONGO_DB
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-config
+                key: reservation-db
+          - name: MONGO_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-config
+                key: car-rental-mongodb
+          - name: MONGO_PW
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: mongodb-password
+          - name: MONGO_USER
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: mongodb-username
+          - name: JWT-SECRET
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: jwt-secret
+          - name: CAR-SERVICE-AUTH
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: car-service-auth
+          - name: INVENTORY-SERVICE-AUTH
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: inventory-service-auth
+          - name: PAYMENT-SERVICE-AUTH
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: payment-service-auth
+          - name: KAFKA-SERVICE
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-config
+                key: kafka-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: reservation-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: reservation
+  ports:
+  - protocol: TCP
+    port: 8086
+    targetPort: 8086
+status:
+  loadBalancer: {}

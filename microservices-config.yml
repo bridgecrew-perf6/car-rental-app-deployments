@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: microservices-config
+data:
+  car-rental-mongodb: car-rental-mongodb.default.svc.cluster.local
+  reservation-db: reservation-db
+  car-db: car-db
+  review-db: review-db
+  inventory-db: inventory-db
+  account-db: account-db
+  user-db: user-db
+  kafka-service: kafka-service.default.svc.cluster.local
+  JWT_EXPIRATION_MS : "86400000"
+  inventory-service-url : inventory-service.default.svc.cluster.local:8085
+  user-service-url : user-service.default.svc.cluster.local:8081
+  BANK_ACCOUNT : bank-account-payment-service-service.default.svc.clluster.local:8088
+  PAYPAL : paypal-payment-service-service.default.svc.clluster.local:8089

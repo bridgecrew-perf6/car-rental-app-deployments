@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-deployment
+  labels:
+    app: payment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payment
+  template:
+    metadata:
+      labels:
+        app: payment
+    spec:
+      containers:
+      - name: payment
+        image: nahomsamri123/payment_web-app:latest
+        ports:
+        - containerPort: 8087
+        env:
+          - name: PAYMENT-SERVICE-AUTH
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: payment-service-auth
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: payment
+  ports:
+  - protocol: TCP
+    port: 8087
+    targetPort: 8087
+status:
+  loadBalancer: {}

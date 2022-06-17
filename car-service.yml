@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: car-deployment
+  labels:
+    app: car
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: car
+  template:
+    metadata:
+      labels:
+        app: car
+    spec:
+      containers:
+      - name: car
+        image: hwelday/carservice_web-app:latest
+        ports:
+        - containerPort: 8083
+        env:
+          - name: MONGO_DB
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-config
+                key: car-db
+          - name: MONGO_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-config
+                key: car-rental-mongodb
+          - name: MONGO_PW
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: mongodb-password
+          - name: MONGO_USER
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: mongodb-username
+          - name: JWT-SECRET
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: jwt-secret
+          - name: INVENTORY-SERVICE-AUTH
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: inventory-service-auth
+          - name: CAR-SERVICE-AUTH
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: car-service-auth
+          - name: INVENTORY-SERVICE-URL
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-config
+                key: inventory-service-url
+          - name: KAFKA-SERVICE
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-config
+                key: kafka-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: car-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: car
+  ports:
+  - protocol: TCP
+    port: 8083
+    targetPort: 8083
+status:
+  loadBalancer: {}

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-deployment
+  labels:
+    app: notification
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notification
+  template:
+    metadata:
+      labels:
+        app: notification
+    spec:
+      containers:
+      - name: notification
+        image: zfsehaye/notification-service_web-app:latest
+        ports:
+        - containerPort: 8088
+        env:
+          - name: KAFKA-SERVICE
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-config
+                key: kafka-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: notification
+  ports:
+  - protocol: TCP
+    port: 8088
+    targetPort: 8088
+status:
+  loadBalancer: {}

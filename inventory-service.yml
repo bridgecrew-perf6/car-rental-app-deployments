@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-deployment
+  labels:
+    app: inventory
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: inventory
+  template:
+    metadata:
+      labels:
+        app: inventory
+    spec:
+      containers:
+      - name: inventory
+        image: biniam123/inventory_web-app:latest
+        ports:
+        - containerPort: 8085
+        env:
+          - name: MONGO_DB
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-config
+                key: inventory-db
+          - name: MONGO_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-config
+                key: car-rental-mongodb
+          - name: MONGO_PW
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: mongodb-password
+          - name: MONGO_USER
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: mongodb-username
+          - name: JWT-SECRET
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: jwt-secret
+          - name: CAR-SERVICE-AUTH
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: car-service-auth
+          - name: INVENTORY-SERVICE-AUTH
+            valueFrom:
+              secretKeyRef:
+                name: microservices-secrets
+                key: inventory-service-auth
+          - name: KAFKA-SERVICE
+            valueFrom:
+              configMapKeyRef:
+                name: microservices-config
+                key: kafka-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: inventory
+  ports:
+  - protocol: TCP
+    port: 8085
+    targetPort: 8085
+status:
+  loadBalancer: {}
