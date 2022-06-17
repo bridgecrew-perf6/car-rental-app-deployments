@@ -37,6 +37,8 @@ spec:
           value: PLAINTEXT://:9092
         - name: KAFKA_ADVERTISED_LISTENERS
           value: PLAINTEXT://kafka-broker:9092,EXTERNAL://0.0.0.0:9092
+        - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+          value: EXTERNAL:SSL
         image: wurstmeister/kafka
         imagePullPolicy: IfNotPresent
         name: kafka-broker
